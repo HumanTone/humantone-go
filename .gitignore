@@ -1,0 +1,13 @@
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.txt
+coverage.html
+go.sum.bak
+.idea/
+.vscode/
+.DS_Store
+*.swp
