@@ -321,7 +321,7 @@ func parseV2Error(status int, raw json.RawMessage, requestID string, headers htt
 		return statusFallbackError(status, "", requestID, headers)
 	}
 
-	sentinel, code, ok := lookupCode(v2.Code)
+	code, ok, sentinel := lookupCode(v2.Code)
 	if !ok {
 		// Unknown code — fall back to the status-based mapping while
 		// preserving the v2 message and details.
@@ -348,28 +348,28 @@ func parseV2Error(status int, raw json.RawMessage, requestID string, headers htt
 
 // lookupCode reverse-maps a code string from the v2 error shape to a
 // sentinel and a normalized ErrorCode. Returns false if the code is unknown.
-func lookupCode(raw string) (error, ErrorCode, bool) {
+func lookupCode(raw string) (ErrorCode, bool, error) {
 	switch ErrorCode(raw) {
 	case ErrCodeAuthentication:
-		return ErrAuthentication, ErrCodeAuthentication, true
+		return ErrCodeAuthentication, true, ErrAuthentication
 	case ErrCodePermission:
-		return ErrPermission, ErrCodePermission, true
+		return ErrCodePermission, true, ErrPermission
 	case ErrCodeRateLimit:
-		return ErrRateLimit, ErrCodeRateLimit, true
+		return ErrCodeRateLimit, true, ErrRateLimit
 	case ErrCodeInsufficientCredits:
-		return ErrInsufficientCredits, ErrCodeInsufficientCredits, true
+		return ErrCodeInsufficientCredits, true, ErrInsufficientCredits
 	case ErrCodeDailyLimitExceeded:
-		return ErrDailyLimitExceeded, ErrCodeDailyLimitExceeded, true
+		return ErrCodeDailyLimitExceeded, true, ErrDailyLimitExceeded
 	case ErrCodeInvalidRequest:
-		return ErrInvalidRequest, ErrCodeInvalidRequest, true
+		return ErrCodeInvalidRequest, true, ErrInvalidRequest
 	case ErrCodeNotFound:
-		return ErrNotFound, ErrCodeNotFound, true
+		return ErrCodeNotFound, true, ErrNotFound
 	case ErrCodeAPIError:
-		return ErrAPIError, ErrCodeAPIError, true
+		return ErrCodeAPIError, true, ErrAPIError
 	case ErrCodeTextTooShort, ErrCodeTextTooLong, ErrCodeSafetyCheckFailed, ErrCodeLanguageNotSupported:
-		return ErrInvalidRequest, ErrorCode(raw), true
+		return ErrorCode(raw), true, ErrInvalidRequest
 	}
-	return nil, "", false
+	return "", false, nil
 }
 
 // resolveRequestID applies the §4.14 precedence: body.request_id (if present

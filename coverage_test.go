@@ -28,7 +28,7 @@ func TestLookupCodeAllSentinels(t *testing.T) {
 		ErrCodeLanguageNotSupported: ErrInvalidRequest,
 	}
 	for code, wantSentinel := range cases {
-		gotSentinel, gotCode, ok := lookupCode(string(code))
+		gotCode, ok, gotSentinel := lookupCode(string(code))
 		if !ok {
 			t.Errorf("lookupCode(%q) ok=false", code)
 			continue
@@ -40,7 +40,7 @@ func TestLookupCodeAllSentinels(t *testing.T) {
 			t.Errorf("lookupCode(%q) code = %q", code, gotCode)
 		}
 	}
-	if _, _, ok := lookupCode("definitely_not_a_code"); ok {
+	if _, ok, _ := lookupCode("definitely_not_a_code"); ok {
 		t.Errorf("lookupCode of unknown should return false")
 	}
 }
