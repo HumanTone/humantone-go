@@ -27,7 +27,10 @@ jobs:
       - name: Verify go.mod is tidy
         run: |
           go mod tidy
-          git diff --exit-code go.mod go.sum
+          if ! git diff --exit-code; then
+            echo "go.mod (or go.sum if present) is not tidy. Run 'go mod tidy' locally."
+            exit 1
+          fi
 
       - name: gofmt
         if: runner.os != 'Windows'
