@@ -119,7 +119,7 @@ func resolveAPIKey(configKey string) (string, *Error) {
 	envKey := strings.TrimSpace(os.Getenv("HUMANTONE_API_KEY"))
 	if envKey == "" {
 		return "", newError(ErrInvalidAPIKey, ErrCodeMissingAPIKey,
-			"humantone: missing API key. Pass APIKey in Config or set HUMANTONE_API_KEY environment variable. Get a key at https://app.humantone.io/settings/api")
+			"humantone: missing API key. Pass APIKey in Config or set HUMANTONE_API_KEY environment variable. Get a key at https://humantone.io/dashboard/settings/api")
 	}
 	if !apiKeyPattern.MatchString(envKey) {
 		return "", newError(ErrInvalidAPIKey, ErrCodeInvalidAPIKey,
